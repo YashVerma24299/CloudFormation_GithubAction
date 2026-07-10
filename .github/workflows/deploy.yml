@@ -28,7 +28,7 @@ jobs:
 
       - name: Validate CloudFormation Template
         run: |
-          aws cloudformation validate-template \CloudFormation
+          aws cloudformation validate-template \
             --template-body file://cloudformation-template--initial-infra.yaml
 
       - name: List CloudFormation Stacks
