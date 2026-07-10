@@ -26,9 +26,6 @@ jobs:
       - name: Verify AWS Login
         run: aws sts get-caller-identity
 
-      - name: Show IAM User
-        run: aws iam get-user
-
       - name: Validate CloudFormation Template
         run: |
           aws cloudformation validate-template \CloudFormation
