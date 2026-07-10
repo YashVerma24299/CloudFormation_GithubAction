@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Sample CloudFormation Template for Validation
+
+Resources: {}
+
+Outputs:
+  Message:
+    Description: Validation successful
+    Value: CloudFormation template is valid.

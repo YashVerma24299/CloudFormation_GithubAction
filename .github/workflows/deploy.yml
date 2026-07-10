@@ -1,0 +1,47 @@
+name: AWS Practice (No Deployment)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  aws-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS Login
+        run: aws sts get-caller-identity
+
+      - name: Show IAM User
+        run: aws iam get-user
+
+      - name: Validate CloudFormation Template
+        run: |
+          aws cloudformation validate-template \CloudFormation
+            --template-body file://cloudformation-template--initial-infra.yaml
+
+      - name: List CloudFormation Stacks
+        run: aws cloudformation list-stacks
+
+      - name: List VPCs
+        run: aws ec2 describe-vpcs
+
+      - name: List ECS Clusters
+        run: aws ecs list-clusters
+
+      - name: Completed
+        run: echo "Everything is working successfully!"
