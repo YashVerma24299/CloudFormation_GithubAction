@@ -1,4 +1,47 @@
-name: AWS Practice (No Deployment)
+# name: AWS Practice (No Deployment)
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# env:
+#   AWS_REGION: ap-south-1
+
+# jobs:
+#   aws-test:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ env.AWS_REGION }}
+
+#       - name: Verify AWS Login
+#         run: aws sts get-caller-identity
+
+#       - name: Validate CloudFormation Template
+#         run: |
+#           aws cloudformation validate-template \
+#             --template-body file://cloudformation-template--initial-infra.yaml
+
+#       - name: List CloudFormation Stacks
+#         run: aws cloudformation list-stacks
+
+#       - name: List VPCs
+#         run: aws ec2 describe-vpcs
+
+#       - name: Completed
+#         run: echo "Everything is working successfully!"
+
+
+name: Deploy Infrastructure
 
 on:
   push:
@@ -9,11 +52,12 @@ env:
   AWS_REGION: ap-south-1
 
 jobs:
-  aws-test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+
+      - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
@@ -23,22 +67,19 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Verify AWS Login
-        run: aws sts get-caller-identity
-
-      - name: Validate CloudFormation Template
+      - name: Validate Template
         run: |
           aws cloudformation validate-template \
             --template-body file://cloudformation-template--initial-infra.yaml
 
-      - name: List CloudFormation Stacks
-        run: aws cloudformation list-stacks
+      - name: Deploy Stack
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation-template--initial-infra.yaml \
+            --stack-name expense-tracker-stack
 
-      - name: List VPCs
-        run: aws ec2 describe-vpcs
-
-      # - name: List ECS Clusters
-      #   run: aws ecs list-clusters
-
-      - name: Completed
-        run: echo "Everything is working successfully!"
+      - name: Show Stack Outputs
+        run: |
+          aws cloudformation describe-stacks \
+            --stack-name expense-tracker-stack \
+            --query "Stacks[0].Outputs"
