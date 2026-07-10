@@ -37,8 +37,8 @@ jobs:
       - name: List VPCs
         run: aws ec2 describe-vpcs
 
-      - name: List ECS Clusters
-        run: aws ecs list-clusters
+      # - name: List ECS Clusters
+      #   run: aws ecs list-clusters
 
       - name: Completed
         run: echo "Everything is working successfully!"
